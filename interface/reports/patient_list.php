@@ -1,5 +1,5 @@
 <?php
- // Copyright (C) 2006-2015 Rod Roark <rod@sunsetsystems.com>
+ // Copyright (C) 2006-2012 Rod Roark <rod@sunsetsystems.com>
  //
  // This program is free software; you can redistribute it and/or
  // modify it under the terms of the GNU General Public License
@@ -51,11 +51,6 @@ else {
 
 <script language="JavaScript">
  var mypcc = '<?php echo $GLOBALS['phone_country_code'] ?>';
-
-$(document).ready(function() {
- top.printLogSetup(document.getElementById('printbutton'));
-});
-
 </script>
 <link rel='stylesheet' href='<?php echo $css_header ?>' type='text/css'>
 <style type="text/css">
@@ -167,7 +162,7 @@ $(document).ready(function() {
 					</span>
 					</a>
 					<?php if ($_POST['form_refresh']) { ?>
-					<a href='#' id='printbutton' class='css_button'>
+					<a href='#' class='css_button' onclick='window.print()'>
 						<span>
 							<?php xl('Print','e'); ?>
 						</span>

@@ -123,7 +123,7 @@ function generate_select_list($tag_name, $list_id, $currvalue, $title, $empty_na
 	$selectEmptyName = xlt($empty_name);
 	if ($empty_name)
 		$s .= "<option value=''>" . $selectEmptyName . "</option>";
-	$lres = sqlStatement("SELECT * FROM list_options WHERE list_id = ? AND activity=1 ORDER BY seq, title", array($list_id));
+	$lres = sqlStatement("SELECT * FROM list_options WHERE list_id = ? ORDER BY seq, title", array($list_id));
 	$got_selected = FALSE;
 	
 	while ( $lrow = sqlFetchArray ( $lres ) ) {
@@ -140,21 +140,6 @@ function generate_select_list($tag_name, $list_id, $currvalue, $title, $empty_na
 		$optionLabel = text(xl_list_label($lrow ['title']));
 		$s .= ">$optionLabel</option>\n";
 	}
-
-	/*
-	  To show the inactive item in the list if the value is saved to database
-	  */
-	  if (!$got_selected && strlen($currvalue) > 0)
-	  {
-	    $lres_inactive = sqlStatement("SELECT * FROM list_options " .
-	    "WHERE list_id = ? AND activity = 0 AND option_id = ? ORDER BY seq, title", array($list_id, $currvalue));
-	    $lrow_inactive = sqlFetchArray($lres_inactive);
-	    if($lrow_inactive['option_id']) {
-	      $optionValue = htmlspecialchars( $lrow_inactive['option_id'], ENT_QUOTES);
-	      $s .= "<option value='$optionValue' selected>" . htmlspecialchars( xl_list_label($lrow_inactive['title']), ENT_NOQUOTES) . "</option>\n";
-	      $got_selected = TRUE;
-	    }
-	  }
 
 	if (!$got_selected && strlen ( $currvalue ) > 0 && !$multiple) {
 		$list_id = $backup_list;
@@ -261,8 +246,7 @@ function generate_form_field($frow, $currvalue) {
 
   $disabled = strpos($frow['edit_options'], '0') === FALSE ? '' : 'disabled';
 
-  $lbfchange = (strpos($frow['form_id'], 'LBF') === 0 || strpos($frow['form_id'], 'LBT') === 0) ?
-    "checkSkipConditions();" : "";
+  $lbfchange = strpos($frow['form_id'], 'LBF') === 0 ? "checkSkipConditions();" : "";
   $lbfonchange = $lbfchange ? "onchange='$lbfchange'" : "";
 
   // generic single-selection list or Race and Ethnicity.
@@ -1728,15 +1712,10 @@ function generate_display_field($frow, $currvalue) {
 
   // address book
   else if ($data_type == 14) {
-    $urow = sqlQuery("SELECT fname, lname, specialty, organization FROM users " .
+    $urow = sqlQuery("SELECT fname, lname, specialty FROM users " .
       "WHERE id = ?", array($currvalue));
-    //ViSolve: To display the Organization Name if it exist. Else it will display the user name.
-    if($urow['organization'] !=""){
-    	$uname = $urow['organization'];
-    }else{
-    	$uname = $urow['lname'];
-    	if ($urow['fname']) $uname .= ", " . $urow['fname'];    	
-    }
+    $uname = $urow['lname'];
+    if ($urow['fname']) $uname .= ", " . $urow['fname'];
     $s = htmlspecialchars($uname,ENT_NOQUOTES);
   }
 
@@ -2399,7 +2378,6 @@ function display_layout_tabs($formtype, $result1, $result2='') {
   while ($frow = sqlFetchArray($fres)) {
 	  $this_group = $frow['group_name'];
       $group_name = substr($this_group, 1);
-	  if ($group_name === 'Employer' && $GLOBALS['omit_employers']) continue;
       ?>
 		<li <?php echo $first ? 'class="current"' : '' ?>>
 			<a href="/play/javascript-tabbed-navigation/" id="header_tab_<?php echo ".htmlspecialchars($group_name,ENT_QUOTES)."?>">
@@ -2427,8 +2405,6 @@ function display_layout_tabs_data($formtype, $result1, $result2='') {
 		$list_id    = isset($frow['list_id']) ? $frow['list_id'] : "";
 		$currvalue  = '';
 
-		if (substr($this_group,1,8) === 'Employer' && $GLOBALS['omit_employers']) continue;
-		
 		$group_fields_query = sqlStatement("SELECT * FROM layout_options " .
 		"WHERE form_id = ? AND uor > 0 AND group_name = ? " .
 		"ORDER BY seq", array($formtype, $this_group) );
@@ -2544,8 +2520,6 @@ function display_layout_tabs_data_editable($formtype, $result1, $result2='') {
 		$list_id    = $frow['list_id'];
 		$currvalue  = '';
 
-		if (substr($this_group,1,8) === 'Employer' && $GLOBALS['omit_employers']) continue;
-		
 		$group_fields_query = sqlStatement("SELECT * FROM layout_options " .
 		"WHERE form_id = ? AND uor > 0 AND group_name = ? " .
 		"ORDER BY seq", array($formtype,$this_group) );
@@ -2765,10 +2739,11 @@ function generate_layout_validation($form_id) {
       case 14:
       case 26:
       case 33:
+      case 36:
         echo
         " if (f.$fldname.selectedIndex <= 0) {\n" .
         "  if (f.$fldname.focus) f.$fldname.focus();\n" .
-        "  		errMsgs[errMsgs.length] = '" . addslashes(xl_layout_label($fldtitle)) . "'; \n" .
+        "  		errMsgs[errMsgs.length] = '" . htmlspecialchars( (xl_layout_label($fldtitle)), ENT_QUOTES) . "'; \n" .
         " }\n";
         break;
       case 27: // radio buttons
@@ -2776,7 +2751,7 @@ function generate_layout_validation($form_id) {
         " var i = 0;\n" .
         " for (; i < f.$fldname.length; ++i) if (f.$fldname[i].checked) break;\n" .
         " if (i >= f.$fldname.length) {\n" .
-        "  		errMsgs[errMsgs.length] = '" . addslashes(xl_layout_label($fldtitle)) . "'; \n" .
+        "  		errMsgs[errMsgs.length] = '" . htmlspecialchars( (xl_layout_label($fldtitle)), ENT_QUOTES) . "'; \n" .
         " }\n";
         break;
       case  2:
@@ -2788,23 +2763,12 @@ function generate_layout_validation($form_id) {
         "  		if (f.$fldname.focus) f.$fldname.focus();\n" .
 		"  		$('#" . $fldname . "').parents('div.tab').each( function(){ var tabHeader = $('#header_' + $(this).attr('id') ); tabHeader.css('color','red'); } ); " .
 		"  		$('#" . $fldname . "').attr('style','background:red'); \n" .
-        "  		errMsgs[errMsgs.length] = '" . addslashes(xl_layout_label($fldtitle)) . "'; \n" .
+        "  		errMsgs[errMsgs.length] = '" . htmlspecialchars( (xl_layout_label($fldtitle)), ENT_QUOTES) . "'; \n" .
         " } else { " .
 		" 		$('#" . $fldname . "').attr('style',''); " .
 		"  		$('#" . $fldname . "').parents('div.tab').each( function(){ var tabHeader = $('#header_' + $(this).attr('id') ); tabHeader.css('color','');  } ); " .
 		" } \n";
         break;
-      case 36: // multi select
-        echo
-        " var multi_select=f['$fldname"."[]']; \n " .
-        " var multi_choice_made=false; \n".
-        " for (var options_index=0; options_index < multi_select.length; options_index++) { ".
-              " multi_choice_made=multi_choice_made || multi_select.options[options_index].selected; \n".
-        "    } \n" .
-        " if(!multi_choice_made)
-            errMsgs[errMsgs.length] = '" . addslashes(xl_layout_label($fldtitle)) . "'; \n" .
-        "";
-          break;
     }
   }
 }
