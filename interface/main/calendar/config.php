@@ -22,6 +22,7 @@ else {
  $pnconfig['utf8Flag'] = false;
 }
 // ---------------------------------------
+global $sqlconf;
 
 $pnconfig['modname'] = "PostCalendar";
 $pnconfig['startpage'] = "PostCalendar";
@@ -32,10 +33,10 @@ $pnconfig['dbhost'] = $host.":".$port;
 $pnconfig['dbuname'] = $login;
 $pnconfig['dbpass'] = $pass;
 $pnconfig['dbname'] = $dbase;
+$pnconfig['dbflags'] = $sqlconf["flags"];
 $pnconfig['system'] = '0';
 $pnconfig['prefix'] = 'openemr';
 $pnconfig['encoded'] = '0';
-
 
 $pntable = array();
 $session_info = $prefix . '_session_info';

@@ -453,10 +453,13 @@ $config = 1; /////////////
 
   private function connect_to_database( $server, $user, $password, $port )
   {
-    if ($server == "localhost")
+    if ($server == "localhost") {
       $dbh = mysql_connect($server, $user, $password);
-    else
-      $dbh = mysql_connect("$server:$port", $user, $password);
+    } elseif (isset($sqlconf) && array_key_exists('flags', $sqlconf) && $sqlconf['flags'] != '') {
+      $dbh = mysql_connect("$server:$port", $user, $password, false, $sqlconf['flags']);
+    } else {
+	  $dbh = mysql_connect("$server:$port", $user, $password);
+	}
     return $dbh;
   }
 

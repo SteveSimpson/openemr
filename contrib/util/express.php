@@ -185,6 +185,7 @@ fwrite($fd,"\$port\t= '$port';\n") or $it_died++;
 fwrite($fd,"\$login\t= '$login';\n") or $it_died++;
 fwrite($fd,"\$pass\t= '$pass';\n") or $it_died++;
 fwrite($fd,"\$dbase\t= '$dbname';\n") or $it_died++;
+fwrite($fd,"\$flags\t= '$flags';\n") or $it_died++;
 
 
 $string = '
@@ -195,6 +196,7 @@ $sqlconf["port"] = $port;
 $sqlconf["login"] = $login;
 $sqlconf["pass"] = $pass;
 $sqlconf["dbase"] = $dbase;
+$sqlconf["flags"] = $flags;
 //////////////////////////
 //////////////////////////
 //////////////////////////

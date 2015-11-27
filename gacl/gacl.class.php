@@ -87,6 +87,9 @@ class gacl {
 
 	/** @var object An ADODB database connector object */
 	var $_db = '';
+	
+	/** @var string The database access flags */
+	var $_db_flags = 0;
 
         /** @var boolean The utf8 encoding flag - bm 05-2009 */
         var $_db_utf8_flag = '';
@@ -150,6 +153,9 @@ class gacl {
                 $this->_db_user = $sqlconf["login"];
                 $this->_db_password = $sqlconf["pass"];
                 $this->_db_name = $sqlconf["dbase"];
+                if (array_key_exists('flags', $sqlconf)) {
+                	$this->_db_flags = $sqlconf["flags"];
+                }
 	        if (!$disable_utf8_flag) {
 		$utf8_flag = true;
 		}
@@ -167,6 +173,7 @@ class gacl {
 			$this->db = ADONewConnection($this->_db_type);
 			//Use NUM for slight performance/memory reasons.
 			$this->db->SetFetchMode(ADODB_FETCH_NUM);
+			$this->db->clientFlags = $this->_db_flags;
 			$this->db->PConnect($this->_db_host, $this->_db_user, $this->_db_password, $this->_db_name);
 
 		        // Modified 5/2009 by BM for UTF-8 project

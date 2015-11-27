@@ -11,6 +11,7 @@ $port	= '3306';
 $login	= 'openemr';
 $pass	= 'openemr';
 $dbase	= 'openemr';
+$flags  = 0; //2048 = MYSQL_CLIENT_SSL - the installer will not currently configure this, must be set by hand after install;
 
 $sqlconf = array();
 global $sqlconf;
@@ -19,6 +20,7 @@ $sqlconf["port"] = $port;
 $sqlconf["login"] = $login;
 $sqlconf["pass"] = $pass;
 $sqlconf["dbase"] = $dbase;
+$sqlconf["flags"] = $flags;
 
 //////////////////////////
 //////////////////////////

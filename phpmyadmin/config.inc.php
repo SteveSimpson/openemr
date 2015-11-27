@@ -31,6 +31,12 @@ $cfg['Servers'][$i]['user'] = $sqlconf['login'];
 $cfg['Servers'][$i]['password'] = $sqlconf['pass'];
 $cfg['Servers'][$i]['only_db'] = $sqlconf['dbase'];
 
+// is MySQL SSL Flag set
+if (array_key_exists('flags', $sqlconf) && ($sqlconf['flags'] & 2048) == 2048) {
+	$cfg['Servers'][$i]['ssl'] = true;
+}
+
+
 /* Other mods for OpenEMR */
 $cfg['AllowThirdPartyFraming'] = TRUE;
 $cfg['ShowCreateDb'] = false;

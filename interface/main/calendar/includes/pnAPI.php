@@ -484,8 +484,13 @@ function pnDBInit()
     // Database connection is a global (for now)
     global $dbconn;
 
+
     // Start connection
     $dbconn = ADONewConnection($dbtype);
+    if (array_key_exists('dbflags', $pnconfig)) {
+    	$dbh = $dbconn->clientFlags = $pnconfig['dbflags'];
+    	
+    } 
     $dbh = $dbconn->Connect($dbhost, $dbuname, $dbpass, $dbname);
     if (!$dbh) {
     	//$dbpass = "";

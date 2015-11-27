@@ -212,6 +212,7 @@ class PMA_Validator
      * @param string $user         username to use
      * @param string $pass         password to use
      * @param string $error_key    key to use in return array
+     * @param string $flags        allows use of SSL MySQL connection
      *
      * @return bool|array
      */
@@ -222,7 +223,8 @@ class PMA_Validator
         $socket,
         $user,
         $pass = null,
-        $error_key = 'Server'
+        $error_key = 'Server',
+        $flags = null,
     ) {
         //    static::testPHPErrorMsg();
         $socket = empty($socket) || $connect_type == 'tcp' ? null : $socket;
@@ -266,14 +268,15 @@ class PMA_Validator
                 break;
             }
         } else if ($extension == 'mysql') {
-            $conn = @mysql_connect($host . $socket . $port, $user, $pass);
+            $conn = @mysql_connect($host . $socket . $port, $user, $pass, false, $flags);
             if (! $conn) {
                 $error = __('Could not connect to the database server!');
             } else {
                 mysql_close($conn);
             }
         } else {
-            $conn = @mysqli_connect($host, $user, $pass, null, $port, $socket);
+            $mysqli = @mysqli_init();
+            $conn = @mysqli_real_connect($mysqli, $host, $user, $pass, null, $port, $socket, $flags);
             if (! $conn) {
                 $error = __('Could not connect to the database server!');
             } else {

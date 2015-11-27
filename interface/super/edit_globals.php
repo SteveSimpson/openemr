@@ -15,6 +15,10 @@ require_once("$srcdir/user.inc");
 require_once("$srcdir/classes/CouchDB.class.php");
 require_once(dirname(__FILE__)."/../../myportal/soap_service/portal_connectivity.php");
 
+if (! array_key_exists('mode', $_GET)) {
+	$_GET['mode'] = ''; 
+}
+
 if ($_GET['mode'] != "user") {
   // Check authorization.
   $thisauth = acl_check('admin', 'super');

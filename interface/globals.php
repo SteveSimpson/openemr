@@ -1,5 +1,10 @@
 <?php
 
+// define a default value to supress error messages
+if (!isset($ignoreAuth)) {
+	$ignoreAuth = false;
+}
+
 // Is this windows or non-windows? Create a boolean definition.
 if (!defined('IS_WINDOWS'))
  define('IS_WINDOWS', (stripos(PHP_OS,'WIN') === 0));

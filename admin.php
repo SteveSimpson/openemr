@@ -68,7 +68,7 @@ foreach ($siteslist as $sfname) {
   include "$sitedir/sqlconf.php";
 
   if ($config) {
-    $dbh = mysql_connect("$host:$port", "$login", "$pass");
+    $dbh = mysql_connect("$host:$port", "$login", "$pass", false, $flags);
     if ($dbh === FALSE)
       $errmsg = "MySQL connect failed";
     else if (!mysql_select_db($dbase, $dbh))

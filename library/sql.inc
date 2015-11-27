@@ -138,10 +138,18 @@ $database = NewADOConnection("mysql_log"); // Use the subclassed driver which lo
 // Note this is a specific bug to work in Ubuntu 12.04, of which the Data Load feature does not
 // work and is suspicious for a bug in PHP of that OS; Setting this clientFlags fixes this bug
 // and appears to not cause problems in other operating systems.
-$database->clientFlags = 128;
+if (isset($flags)) {
+	$flags = $flags | 128;
+} else {
+	$flags = 128;
+	$sqlconf['flags'] = $flags; // set this so it can be used elsewhere if needed
+}
+$database->clientFlags = $flags;
+
 $database->PConnect($host.":".$port, $login, $pass, $dbase);
 $GLOBALS['adodb']['db'] = $database;
 $GLOBALS['dbh'] = $database->_connectionID;
+$GLOBALS['adodb']['db']->clientFlags = $flags; // call this out for good measure
 
 // Modified 5/2009 by BM for UTF-8 project ---------
 if (!$disable_utf8_flag) {
