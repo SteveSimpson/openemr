@@ -229,6 +229,7 @@ function getServiceFacilities($first = '') {
 
 //(CHEMED) facility filter
 function getProviderInfo($providerID = "%", $providers_only = true, $facility = '' ) {
+	$returnval=[];
     $param1 = "";
     if ($providers_only === 'any') {
       $param1 = " AND authorized = 1 AND active = 1 ";
@@ -305,7 +306,7 @@ function getCalendarProviderInfo($providerID = "%", $providers_only = true) {
 
 function getProviderName($providerID) {
     $pi = getProviderInfo($providerID, 'any');
-    if (strlen($pi[0]["lname"]) > 0) {
+    if (isset($pi[0]["lname"]) && strlen($pi[0]["lname"]) > 0) {
         return $pi[0]['fname'] . " " . $pi[0]['lname'];
     }
     return "";

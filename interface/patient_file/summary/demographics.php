@@ -1026,6 +1026,7 @@ expand_collapse_widget($widgetTitle, $widgetLabel, $widgetButtonLabel,
   $result = sqlStatement($sql, array($pid) );
 
   if (sqlNumRows($result) == 0) {
+    if (! isset($numcols)) { $numcols = 1; } // elliminate the error logged
     echo " <table><tr>\n";
     echo "  <td colspan='$numcols' class='text'>&nbsp;&nbsp;" . xlt('None') . "</td>\n";
     echo " </tr></table>\n";

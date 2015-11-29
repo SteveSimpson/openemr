@@ -54,7 +54,7 @@ function get_pharmacies() {
     "ORDER BY name, area_code, prefix, number");
 }
 
-function optionalAge($frow, $date, &$asof) {
+function optionalAge($frow, $date, &$asof = '') {
   $asof = '';
   if (empty($date)) return '';
   $date = substr($date, 0, 10);
@@ -1033,6 +1033,7 @@ function generate_form_field($frow, $currvalue) {
   //multiple select
   // supports backup list
   else if ($data_type == 36) {
+  	if (! isset($onchange)) { $onchange = ''; }
   	echo generate_select_list("form_$field_id", $list_id, $currvalue,
       $description, $showEmpty ? $empty_title : '', '', $onchange, '', null, true, $backup_list);
   	
