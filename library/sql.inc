@@ -18,19 +18,22 @@
 * 
 * @package   OpenEMR
 * @link      http://www.open-emr.org
+*
+* 2015-12-06 Steve Simpson - Updated to use mysqli
 */
 
 require_once(dirname(__FILE__) . "/sqlconf.php");
 require_once(dirname(__FILE__) . "/adodb/adodb.inc.php");
-require_once(dirname(__FILE__) . "/adodb/drivers/adodb-mysql.inc.php");
+require_once(dirname(__FILE__) . "/adodb/drivers/adodb-mysqli.inc.php");
 require_once(dirname(__FILE__) . "/log.inc");
+require_once(dirname(__FILE__) . "/htmlspecialchars.inc.php");
 
 /**
 * ADODB_mysql class wrapper to ensure proper auditing in OpenEMR.
 *
 * @author  Kevin Yeh <kevin.y@integralemr.com>
 */
-class ADODB_mysql_log extends ADODB_mysql
+class ADODB_mysql_log extends ADODB_mysqli
 {
         /**
         * ADODB Execute function wrapper to ensure proper auditing in OpenEMR.
@@ -69,8 +72,12 @@ class ADODB_mysql_log extends ADODB_mysql
         function _insertid()
         {
             $rs=$this->ExecuteNoLog("SELECT LAST_INSERT_ID()");
-            $ret=reset($rs->fields);
-            $rs->close();
+            if ($rs) {
+	            $ret=reset($rs->fields);
+	            $rs->close();
+            } else {
+            	return false;
+            }
             return $ret;
         }
 
@@ -146,7 +153,7 @@ if (isset($flags)) {
 }
 $database->clientFlags = $flags;
 
-$database->PConnect($host.":".$port, $login, $pass, $dbase);
+$database->PConnect($host, $login, $pass, $dbase);
 $GLOBALS['adodb']['db'] = $database;
 $GLOBALS['dbh'] = $database->_connectionID;
 $GLOBALS['adodb']['db']->clientFlags = $flags; // call this out for good measure
@@ -192,7 +199,7 @@ if (!$GLOBALS['dbh']) {
 * @param  array   $binds      binded variables array (optional)
 * @return recordset/resource
 */
-function sqlStatement($statement, $binds=NULL )
+function sqlStatement($statement, $binds=[] )
 {
   if (is_array($binds)) {
     // Use adodb Execute with binding and return a recordset.
