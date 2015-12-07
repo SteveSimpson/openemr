@@ -153,7 +153,7 @@ if (isset($flags)) {
 }
 $database->clientFlags = $flags;
 
-$database->PConnect($host.':'.$port, $login, $pass, $dbase);
+$database->PConnect($host.":".$port, $login, $pass, $dbase);
 $GLOBALS['adodb']['db'] = $database;
 $GLOBALS['dbh'] = $database->_connectionID;
 $GLOBALS['adodb']['db']->clientFlags = $flags; // call this out for good measure
