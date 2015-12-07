@@ -21,9 +21,8 @@
  * @link    http://www.open-emr.org
  */
 
-require_once("{$GLOBALS['srcdir']}/adldap/adLDAP.php");
-require_once("{$GLOBALS['srcdir']}/adldap/adLDAP_conf.inc");
-
+require_once("{$GLOBALS['srcdir']}/library/vendor/autoload.php");
+require_once("{$GLOBALS['srcdir']}/sites/default/adldap_conf.php");
 
 /* to use adLDAP authentication we require the password in cleartext 
  */
@@ -100,7 +99,7 @@ function authNewSession ($user, $pass, $provider)
 
     // adldap_options defined in adLDAP_conf.inc
     global $adldap_options;
-    $adldap = new adLDAP($adldap_options);
+    $adldap = new \Adldap\Adldap($adldap_options);
 
     // get details about the user
     $authDB = sqlQuery("select id, password, authorized, see_auth".
