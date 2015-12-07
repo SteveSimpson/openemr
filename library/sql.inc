@@ -18,12 +18,15 @@
 * 
 * @package   OpenEMR
 * @link      http://www.open-emr.org
+*
+* 2015-12-06 Steve Simpson - Updated to use mysqli
 */
 
 require_once(dirname(__FILE__) . "/sqlconf.php");
 require_once(dirname(__FILE__) . "/adodb/adodb.inc.php");
 require_once(dirname(__FILE__) . "/adodb/drivers/adodb-mysql.inc.php");
 require_once(dirname(__FILE__) . "/log.inc");
+require_once(dirname(__FILE__) . "/htmlspecialchars.inc.php");
 
 /**
 * ADODB_mysql class wrapper to ensure proper auditing in OpenEMR.
@@ -69,8 +72,12 @@ class ADODB_mysql_log extends ADODB_mysql
         function _insertid()
         {
             $rs=$this->ExecuteNoLog("SELECT LAST_INSERT_ID()");
-            $ret=reset($rs->fields);
-            $rs->close();
+            if ($rs) {
+	            $ret=reset($rs->fields);
+	            $rs->close();
+            } else {
+            	return false;
+            }
             return $ret;
         }
 

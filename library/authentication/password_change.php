@@ -87,6 +87,11 @@ function update_password($activeUser,$targetUser,&$currentPwd,&$newPwd,&$errMsg,
             $errMsg=xl("Trying to create user with existing username!");
             return false;
         }
+        if (isset($GLOBALS['oer_config']['authProvider']) && $GLOBALS['oer_config']['authProvider'] != 'basic')
+        {
+        	$errMsg=xl("Can only change local passwords!");
+        	return false;
+        }
         // If this user is changing his own password, then confirm that they have the current password correct
         $hash_current = oemr_password_hash($currentPwd,$userInfo[COL_SALT]);
         if(($hash_current!=$userInfo[COL_PWD]))
@@ -98,12 +103,7 @@ function update_password($activeUser,$targetUser,&$currentPwd,&$newPwd,&$errMsg,
     else {
         // If this is an administrator changing someone else's password, then check that they have the password right
 
-        $adminSQL=" SELECT ".implode(",",array(COL_PWD,COL_SALT))
-                  ." FROM ".TBL_USERS_SECURE
-                  ." WHERE ".COL_ID."=?";
-        $adminInfo=privQuery($adminSQL,array($activeUser));
-        $hash_admin = oemr_password_hash($currentPwd,$adminInfo[COL_SALT]);
-        if($hash_admin!=$adminInfo[COL_PWD])
+        if (! confirm_user_password($activeUser,$currentPwd))
         {
             $errMsg=xl("Incorrect password!");
             return false;
@@ -167,6 +167,11 @@ function update_password($activeUser,$targetUser,&$currentPwd,&$newPwd,&$errMsg,
         {
             $errMsg=xl("Trying to create user with existing username!");
             return false;
+        }
+        if (isset($GLOBALS['oer_config']['authProvider']) && $GLOBALS['oer_config']['authProvider'] != 'basic')
+        {
+        	$errMsg=xl("Can only change local passwords!");
+        	return false;
         }
         
         $forbid_reuse=$GLOBALS['password_history'] != 0;

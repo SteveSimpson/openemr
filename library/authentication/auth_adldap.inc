@@ -1,12 +1,29 @@
 <?php
-//----------THINGS WE ALWAYS DO
+/**
+ * Authorization functions.
+ *
+ * DO NOT CALL THIS LIBRARY DIRECTLY - USE ../auth.inc
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-license.php>;.
+ *
+ * @package OpenEMR
+ * @author  ???
+ * @author  Steve Simpson <steve@lcsas.us> 
+ * @link    http://www.open-emr.org
+ */
 
-require_once("{$GLOBALS['srcdir']}/log.inc");
-require_once("{$GLOBALS['srcdir']}/sql.inc");
-require_once("{$GLOBALS['srcdir']}/adldap/adLDAP.php");
-require_once("{$GLOBALS['srcdir']}/adldap/adLDAP_conf.inc");
-// added for the phpGACL group check -- JRM
-require_once("{$GLOBALS['srcdir']}/acl.inc");
+require_once("{$GLOBALS['srcdir']}/vendor/autoload.php");
+require_once(dirname($GLOBALS['srcdir']) . "/sites/default/adldap_conf.php");
+require_once("{$GLOBALS['srcdir']}/authentication/common_operations_adldap.php");
 
 /* to use adLDAP authentication we require the password in cleartext 
  */
@@ -83,7 +100,7 @@ function authNewSession ($user, $pass, $provider)
 
     // adldap_options defined in adLDAP_conf.inc
     global $adldap_options;
-    $adldap = new adLDAP($adldap_options);
+    $adldap = new \Adldap\Adldap($adldap_options);
 
     // get details about the user
     $authDB = sqlQuery("select id, password, authorized, see_auth".
