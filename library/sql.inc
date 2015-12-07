@@ -24,7 +24,7 @@
 
 require_once(dirname(__FILE__) . "/sqlconf.php");
 require_once(dirname(__FILE__) . "/adodb/adodb.inc.php");
-require_once(dirname(__FILE__) . "/adodb/drivers/adodb-mysqli.inc.php");
+require_once(dirname(__FILE__) . "/adodb/drivers/adodb-mysql.inc.php");
 require_once(dirname(__FILE__) . "/log.inc");
 require_once(dirname(__FILE__) . "/htmlspecialchars.inc.php");
 
@@ -33,7 +33,7 @@ require_once(dirname(__FILE__) . "/htmlspecialchars.inc.php");
 *
 * @author  Kevin Yeh <kevin.y@integralemr.com>
 */
-class ADODB_mysql_log extends ADODB_mysqli
+class ADODB_mysql_log extends ADODB_mysql
 {
         /**
         * ADODB Execute function wrapper to ensure proper auditing in OpenEMR.
@@ -153,7 +153,7 @@ if (isset($flags)) {
 }
 $database->clientFlags = $flags;
 
-$database->PConnect($host, $login, $pass, $dbase);
+$database->PConnect($host.':'.$port, $login, $pass, $dbase);
 $GLOBALS['adodb']['db'] = $database;
 $GLOBALS['dbh'] = $database->_connectionID;
 $GLOBALS['adodb']['db']->clientFlags = $flags; // call this out for good measure
@@ -199,7 +199,7 @@ if (!$GLOBALS['dbh']) {
 * @param  array   $binds      binded variables array (optional)
 * @return recordset/resource
 */
-function sqlStatement($statement, $binds=[] )
+function sqlStatement($statement, $binds=NULL )
 {
   if (is_array($binds)) {
     // Use adodb Execute with binding and return a recordset.
