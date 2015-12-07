@@ -21,8 +21,8 @@
  * @link    http://www.open-emr.org
  */
 
-require_once("{$GLOBALS['srcdir']}/library/vendor/autoload.php");
-require_once("{$GLOBALS['srcdir']}/sites/default/adldap_conf.php");
+require_once("{$GLOBALS['srcdir']}/vendor/autoload.php");
+require_once(dirname($GLOBALS['srcdir']) . "/sites/default/adldap_conf.php");
 
 /* to use adLDAP authentication we require the password in cleartext 
  */
