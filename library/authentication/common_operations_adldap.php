@@ -24,10 +24,21 @@
  */
 
 require_once("$srcdir/authentication/privDB.php");
+define("TBL_USERS_SECURE","users_secure");
 define("TBL_USERS","users");
+
 define("COL_PWD","password");
 define("COL_UNM","username");
 define("COL_ID","id");
+define("COL_SALT","salt");
+define("COL_LU","last_update");
+define("COL_PWD_H1","password_history1");
+define("COL_SALT_H1","salt_history1");
+define("COL_ACTIVE","active");
+
+define("COL_PWD_H2","password_history2");
+define("COL_SALT_H2","salt_history2");
+
 
 /**
  * We are using LDAP. Set that in the DB if this function is called.

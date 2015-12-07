@@ -28,4 +28,4 @@ if (isset($GLOBALS['oer_config']['authProvider'])) {
 	$auth_type = 'basic';
 }
 
-require_once( dirname(__FILE__) . "/common_operations_{$auth_type}.inc" );
+require_once( dirname(__FILE__) . "/common_operations_{$auth_type}.php" );
