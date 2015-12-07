@@ -274,4 +274,13 @@ function validateGroupStatus ($user_to_be_checked, $group_user) {
 
     return false;
 }
+
+function confirm_user_password($username, &$password)
+{
+	global $adldap_options;
+	
+	$adldap = new \Adldap\Adldap($adldap_options);
+	
+	return $adldap->authenticate($user, $password);
+}
 ?>
