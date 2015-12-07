@@ -23,6 +23,7 @@
 
 require_once("{$GLOBALS['srcdir']}/vendor/autoload.php");
 require_once(dirname($GLOBALS['srcdir']) . "/sites/default/adldap_conf.php");
+require_once("{$GLOBALS['srcdir']}/authentication/common_operations_adldap.php");
 
 /* to use adLDAP authentication we require the password in cleartext 
  */
@@ -273,14 +274,5 @@ function validateGroupStatus ($user_to_be_checked, $group_user) {
     }
 
     return false;
-}
-
-function confirm_user_password($username, &$password)
-{
-	global $adldap_options;
-	
-	$adldap = new \Adldap\Adldap($adldap_options);
-	
-	return $adldap->authenticate($user, $password);
 }
 ?>

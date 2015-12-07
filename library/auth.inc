@@ -26,8 +26,9 @@ require_once("{$GLOBALS['srcdir']}/sql.inc");
 require_once("{$GLOBALS['srcdir']}/acl.inc");
 
 // default to basic authentication
-if (! isset($GLOBALS['oer_config']['authProvider'])) {
-	$GLOBALS['oer_config']['authProvider'] = 'basic';
+if (isset($GLOBALS['oer_config']['authProvider'])) {
+	$auth_type = $GLOBALS['oer_config']['authProvider'];
+} else {
+	$auth_type = 'basic';
 }
-
-require_once("{$GLOBALS['srcdir']}/authentication/auth_" . $GLOBALS['oer_config']['authProvider'] . ".inc" );
+require_once("{$GLOBALS['srcdir']}/authentication/auth_{$auth_type}.inc" );
