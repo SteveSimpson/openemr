@@ -34,14 +34,5 @@ CREATE TABLE IF NOT EXISTS `form_init_clinical_assessment` (
   `client_goal` text,
   `interpretive_summary` text,
   `dsm_v_criteria` text,
-  `signature` text,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
-
-
-CREATE TABLE IF NOT EXISTS `form_init_clinical_assessment_signature` (
-  `id` bigint(20) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `signed_text` MEDIUMTEXT,
-   PRIMARY KEY (`id`,`timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;

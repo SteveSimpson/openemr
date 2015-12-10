@@ -39,7 +39,7 @@ $obj = $formid ? formFetch("form_init_clinical_assessment", $formid) : array();
 
 
 // Get the providers list.
- $ures = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
+$users = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
   "authorized != 0 AND active = 1 ORDER BY lname, fname");
  
 function writeRow($label, $field, $disabled=false) {
@@ -57,84 +57,96 @@ function writeRow($label, $field, $disabled=false) {
 }
 
 ?>
-<html><head>
+<html>
+<head>
 <?php html_header_show();?>
 <script type="text/javascript" src="../../../library/dialog.js"></script>
 <!-- pop up calendar -->
-<style type="text/css">@import url(<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.css);</style>
-<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.js"></script>
+<style type="text/css">
+@import
+url(<?php
+echo
+$GLOBALS[
+'webroot'
+]
+?>/
+library
+/dynarch_calendar.css);
+</style>
+<script type="text/javascript"
+	src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.js"></script>
 <?php include_once("{$GLOBALS['srcdir']}/dynarch_calendar_en.inc.php"); ?>
-<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar_setup.js"></script>
-<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/textformat.js"></script>
-<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dialog.js"></script>
+<script type="text/javascript"
+	src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar_setup.js"></script>
+<script type="text/javascript"
+	src="<?php echo $GLOBALS['webroot'] ?>/library/textformat.js"></script>
+<script type="text/javascript"
+	src="<?php echo $GLOBALS['webroot'] ?>/library/dialog.js"></script>
 <link rel="stylesheet" href="<?php echo $css_header;?>" type="text/css">
 </head>
 <body class="body_top">
 
-<form method='post' name='my_form' <?php echo "action='$rootdir/forms/init_clinical_assessment/save.php?id=" . attr($formid) ."'"; ?> >
+	<form method='post' name='my_form'
+		<?php echo "action='$rootdir/forms/init_clinical_assessment/save.php?id=" . attr($formid) ."'"; ?>>
 
-<table border="0">
-<tr><th colspan='4'><?php echo xlt('Initial Clinical Assessment') ?></th></tr>
-<tr>
-<td align="left" class="forms" class="forms"><?php echo xlt('Patient Name' ); ?></td>
-		<td class="forms">
-			<label class="forms-data"> <?php if (is_numeric($pid)) {
+		<table border="0">
+			<tr>
+				<th colspan='4'><?php echo xlt('Initial Clinical Assessment') ?></th>
+			</tr>
+			<tr>
+				<td align="left" class="forms" class="forms"><?php echo xlt('Patient Name' ); ?></td>
+				<td class="forms"><label class="forms-data"> <?php if (is_numeric($pid)) {
     
-    $result = getPatientData($pid, "fname,lname,squad");
+   $result = getPatientData($pid, "fname,lname,squad");
    echo text($result['fname'])." ".text($result['lname']);}
    $patient_name=($result['fname'])." ".($result['lname']);
    ?>
-   </label>
-   <input type="hidden" name="client_name" value="<?php echo attr($patient_name);?>">
-		</td>
-		<td align="left"  class="forms"><?php echo xlt('DOB'); ?></td>
-		<td class="forms">
-		<label class="forms-data"> <?php if (is_numeric($pid)) {
+				</label> <input type="hidden" name="client_name"
+					value="<?php echo attr($patient_name);?>"></td>
+				<td align="left" class="forms"><?php echo xlt('DOB'); ?></td>
+				<td class="forms"><label class="forms-data"> <?php if (is_numeric($pid)) {
     
-    $result = getPatientData($pid, "*");
+   $result = getPatientData($pid, "*");
    echo text($result['DOB']);}
    $dob=($result['DOB']);
    ?>
-   </label>
-     <input type="hidden" name="DOB" value="<?php echo attr($dob);?>">
-		</td>
-		</tr>
-	<tr>
- 	
-	
-	
-		<td align="left"  class="forms"><?php echo xlt('Patient ID'); ?></td>
-		<td class="forms">
-			<label class="forms-data" > <?php if (is_numeric($pid)) {
+				</label> <input type="hidden" name="DOB" value="<?php echo attr($dob);?>">
+				</td>
+			</tr>
+			<tr>
+
+
+
+				<td align="left" class="forms"><?php echo xlt('Patient ID'); ?></td>
+				<td class="forms"><label class="forms-data"> <?php if (is_numeric($pid)) {
     
-    $result = getPatientData($pid, "*");
+   $result = getPatientData($pid, "*");
    echo text($result['pid']);}
    $patient_id=$result['pid'];
    ?>
-   </label>
-    <input type="hidden" name="client_number" value="<?php echo attr($patient_id);?>">
-		</td>
+				</label> <input type="hidden" name="client_number"
+					value="<?php echo attr($patient_id);?>"></td>
 
 
-		<td align="left" class="forms"><?php echo xlt('Date of Service'); ?></td>
-		<td class="forms">
-			   <input type='text' size='10' name='admit_date' id='admission_date' <?php if (isset($disabled)) echo attr($disabled); ?>
-			   value='<?php if (isset($obj{"admit_date"})) echo attr($obj{"admit_date"}); ?>'   
-			   title='<?php echo xla('yyyy-mm-dd Date of service'); ?>'
-       onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' />
-        <img src='../../pic/show_calendar.gif' align='absbottom' width='24' height='22'
-        id='img_admission_date' border='0' alt='[?]' style='cursor:pointer;cursor:hand'
-        title='<?php echo xla('Click here to choose a date'); ?>'>
-		</td> 
-		
-		</tr>
-		<tr>
-		<td align="left" class="forms"><?php echo xlt('Provider'); ?></td>
-		 <td class="forms" width="280px">
- <?php
+				<td align="left" class="forms"><?php echo xlt('Date of Service'); ?></td>
+				<td class="forms"><input type='text' size='10'
+					name='admit_date' id='admission_date'
+					<?php if (isset($disabled)) echo attr($disabled); ?>
+					value='<?php if (isset($obj{"admit_date"})) echo attr($obj{"admit_date"}); ?>'
+					title='<?php echo xla('yyyy-mm-dd Date of service'); ?>'
+					onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' /> <img
+					src='../../pic/show_calendar.gif' align='absbottom' width='24'
+					height='22' id='img_admission_date' border='0' alt='[?]'
+					style='cursor: pointer; cursor: hand'
+					title='<?php echo xla('Click here to choose a date'); ?>'></td>
+
+			</tr>
+			<tr>
+				<td align="left" class="forms"><?php echo xlt('Provider'); ?></td>
+				<td class="forms" width="280px"><?php
 
     echo "<select name='provider' style='width:60%' />";
-    while ($urow = sqlFetchArray($ures)) {
+    while ($urow = sqlFetchArray($users)) {
       echo "    <option value='" . attr($urow['lname']) . "'";
       if (isset($obj{"provider"}) && $urow['lname'] == attr($obj{"provider"})) echo " selected";
       echo ">" . text($urow['lname']);
@@ -143,58 +155,26 @@ function writeRow($label, $field, $disabled=false) {
     }
     echo "</select>";
 ?>
-		</td>
-			
-		</tr>
-	
-	<tr>
-	
-  <td colspan='3' nowrap style='font-size:8pt'>
-   &nbsp;
-	</td>
-	</tr>
-<?php 
-	foreach($form_fields as $field=>$label) {
-		writeRow($label,$field);
-	}
-	writeRow('Signed','signature', true);
-?>
-	<tr>
-		<td align="left" colspan="3" style="padding-bottom:7px;"></td>
-	</tr>
-	<tr>
-		<td align="left" colspan="3" style="padding-bottom:7px;"></td>
-	</tr>
-	<tr>
-		<td></td>
-    <td><input type='submit'  value='<?php echo xlt('Save');?>' class="button-css">&nbsp;
-    <input type='submit' name='signForm' value='<?php echo xlt('Save/Sign');?>' class="button-css">&nbsp;
-	<input type='button'  value="Print" onclick="window.print()" class="button-css">&nbsp;
-	<input type='button' class="button-css" value='<?php echo xlt('Cancel');?>'
- onclick="top.restoreSession();location='<?php echo "$rootdir/patient_file/encounter/$returnurl" ?>'" /></td>
-	</tr>
-</table>
-</form>
-<?php 
-if (isset($obj{'signature'})) {
-	echo "<div><h4>Signed:</h4>\n<ul>";
-	
-	$sql = "SELECT `timestamp` FROM `form_init_clinical_assessment_signature` WHERE id='".add_escape_custom("$id")."'";
-	
-	$query = sqlStatement($sql);
-	
-	while ($row = sqlFetchArray($query)) {
-		$link = "$rootdir/forms/init_clinical_assessment/signature.php?id=" . add_escape_custom("$id") . "&ts=" .urldecode($row['timestamp']);
-		echo "<li><a href='$link'>".$row['timestamp']."</a></li>\n";
-	}
-	echo "</ul></div>\n";
-}
-?>
-<script>
+				</td>
+
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type='submit' value='<?php echo xlt('Save');?>'
+					class="button-css">&nbsp; <input type='button'
+					value="Print" onclick="window.print()" class="button-css">&nbsp;
+					<input type='button' class="button-css"
+					value='<?php echo xlt('Cancel');?>'
+					onclick="top.restoreSession();location='<?php echo "$rootdir/patient_file/encounter/$returnurl" ?>'" /></td>
+			</tr>
+		</table>
+	</form>
+
+	<script>
 /* required for popup calendar */
 Calendar.setup({inputField:"admission_date", ifFormat:"%Y-%m-%d", button:"img_admission_date"});
 
 </script>
-<?php
+	<?php
 formFooter();
 ?>
