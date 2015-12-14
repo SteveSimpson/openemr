@@ -37,6 +37,19 @@ $returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_enco
 $formid = 0 + (isset($_GET['id']) ? $_GET['id'] : '');
 $obj = $formid ? formFetch("form_clinical_service_note", $formid) : array();
 
+// Code to look for the last encounter & load it if it exists
+if (count($obj) == 0) {
+	$sql = "SELECT id, date FROM form_clinical_service_note WHERE pid='$pid' ORDER BY date DESC LIMIT 1";
+	$lastFormSql = sqlStatement($sql);
+	if ($lastFormSql) {
+		$lastForm = sqlFetchArray($lastFormSql);
+		$obj = formFetch("form_clinical_service_note", $lastForm['id']);
+		$obj['id'] = false; // we are preloading text, we don't want to overwrite the last form!
+		foreach ($form_fields as $field=>$label) {
+			$obj[] = "[[[ FROM " . $lastForm['date'] . ": " . $obj[$field] . " ]]]";
+		}
+	}
+}
 
 // Get the providers list.
 $users = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
