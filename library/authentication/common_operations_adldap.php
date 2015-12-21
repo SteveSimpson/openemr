@@ -82,5 +82,15 @@ function confirm_user_password($username, &$password)
 	
 	$adldap = new \Adldap\Adldap($adldap_options);
 	
-	return $adldap->authenticate($user, $password);
+	if (!isset($username || empty($username) || trim($username) == '') {
+		return false;
+	}
+	
+	$ret = $adldap->authenticate($username, $password);
+
+	if ($ret === true) {
+		return true;
+	} else {
+		return false;
+	}
 }
