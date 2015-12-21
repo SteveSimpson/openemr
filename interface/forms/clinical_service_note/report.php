@@ -24,7 +24,7 @@ include_once("../../globals.php");
 include_once($GLOBALS["srcdir"]."/api.inc");
 function clinical_service_note_report( $pid, $encounter, $cols, $id) {
 	$count = 0;
-	$data = formFetch("form_init_clinical_assessment", $id);
+	$data = formFetch("clinical_service_note", $id);
 	if ($data) {
 		print "<table><tr>";
 		foreach($data as $key => $value) {
