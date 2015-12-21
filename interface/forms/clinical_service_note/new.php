@@ -39,14 +39,17 @@ $obj = $formid ? formFetch("form_clinical_service_note", $formid) : array();
 
 // Code to look for the last encounter & load it if it exists
 if (count($obj) == 0) {
+	$obj['admit_date'] = date('Y-m-d');
 	$sql = "SELECT id, date FROM form_clinical_service_note WHERE pid='$pid' ORDER BY date DESC LIMIT 1";
 	$lastFormSql = sqlStatement($sql);
 	if ($lastFormSql) {
 		$lastForm = sqlFetchArray($lastFormSql);
-		$obj = formFetch("form_clinical_service_note", $lastForm['id']);
-		$obj['id'] = false; // we are preloading text, we don't want to overwrite the last form!
-		foreach ($form_fields as $field=>$label) {
-			$obj[] = "[[[ FROM " . $lastForm['date'] . ": " . $obj[$field] . " ]]]";
+		if (isset($lastForm['id'])) {
+			// we are preloading text, we don't want to overwrite the last form!
+			$obj_temp = formFetch("form_clinical_service_note", $lastForm['id']); 
+			foreach ($form_fields as $field=>$label) {
+				$obj[$field] = "[[[ FROM " . $lastForm['date'] . ": " . $obj_temp[$field] . " ]]]";
+			}
 		}
 	}
 }
@@ -75,27 +78,14 @@ function writeRow($label, $field, $disabled=false) {
 <?php html_header_show();?>
 <script type="text/javascript" src="../../../library/dialog.js"></script>
 <!-- pop up calendar -->
-<style type="text/css">
-@import
-url(<?php
-echo
-$GLOBALS[
-'webroot'
-]
-?>/
-library
-/dynarch_calendar.css);
-</style>
-<script type="text/javascript"
-	src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.js"></script>
+<style type="text/css">@import url(<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.css);</style>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.js"></script>
 <?php include_once("{$GLOBALS['srcdir']}/dynarch_calendar_en.inc.php"); ?>
-<script type="text/javascript"
-	src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar_setup.js"></script>
-<script type="text/javascript"
-	src="<?php echo $GLOBALS['webroot'] ?>/library/textformat.js"></script>
-<script type="text/javascript"
-	src="<?php echo $GLOBALS['webroot'] ?>/library/dialog.js"></script>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar_setup.js"></script>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/textformat.js"></script>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dialog.js"></script>
 <link rel="stylesheet" href="<?php echo $css_header;?>" type="text/css">
+
 </head>
 <body class="body_top">
 
@@ -169,8 +159,25 @@ library
     echo "</select>";
 ?>
 				</td>
-
 			</tr>
+				<tr>
+	
+  <td colspan='3' nowrap style='font-size:8pt'>
+   &nbsp;
+	</td>
+	</tr>
+<?php 
+	foreach($form_fields as $field=>$label) {
+		writeRow($label,$field);
+	}
+?>
+	<tr>
+		<td align="left" colspan="3" style="padding-bottom:7px;"></td>
+	</tr>
+	<tr>
+		<td align="left" colspan="3" style="padding-bottom:7px;"></td>
+	</tr>
+			
 			<tr>
 				<td></td>
 				<td><input type='submit' value='<?php echo xlt('Save');?>'

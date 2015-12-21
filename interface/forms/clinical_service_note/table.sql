@@ -1,8 +1,8 @@
 --
--- Table structure for table `form_init_clinical_assessment`
+-- Table structure for table `form_clinical_service_note`
 --
 
-CREATE TABLE IF NOT EXISTS `form_init_clinical_assessment` (
+CREATE TABLE IF NOT EXISTS `form_clinical_service_note` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT NULL,
   `pid` bigint(20) DEFAULT NULL,

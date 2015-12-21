@@ -37,6 +37,9 @@ $returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_enco
 $formid = 0 + (isset($_GET['id']) ? $_GET['id'] : '');
 $obj = $formid ? formFetch("form_init_clinical_assessment", $formid) : array();
 
+if (count($obj) == 0) {
+	$obj['admit_date'] = date('Y-m-d');
+}
 
 // Get the providers list.
 $users = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
@@ -62,27 +65,14 @@ function writeRow($label, $field, $disabled=false) {
 <?php html_header_show();?>
 <script type="text/javascript" src="../../../library/dialog.js"></script>
 <!-- pop up calendar -->
-<style type="text/css">
-@import
-url(<?php
-echo
-$GLOBALS[
-'webroot'
-]
-?>/
-library
-/dynarch_calendar.css);
-</style>
-<script type="text/javascript"
-	src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.js"></script>
+<style type="text/css">@import url(<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.css);</style>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar.js"></script>
 <?php include_once("{$GLOBALS['srcdir']}/dynarch_calendar_en.inc.php"); ?>
-<script type="text/javascript"
-	src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar_setup.js"></script>
-<script type="text/javascript"
-	src="<?php echo $GLOBALS['webroot'] ?>/library/textformat.js"></script>
-<script type="text/javascript"
-	src="<?php echo $GLOBALS['webroot'] ?>/library/dialog.js"></script>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dynarch_calendar_setup.js"></script>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/textformat.js"></script>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dialog.js"></script>
 <link rel="stylesheet" href="<?php echo $css_header;?>" type="text/css">
+
 </head>
 <body class="body_top">
 
@@ -156,7 +146,23 @@ library
     echo "</select>";
 ?>
 				</td>
-
+	<tr>
+	
+  <td colspan='3' nowrap style='font-size:8pt'>
+   &nbsp;
+	</td>
+	</tr>
+<?php 
+	foreach($form_fields as $field=>$label) {
+		writeRow($label,$field);
+	}
+?>
+	<tr>
+		<td align="left" colspan="3" style="padding-bottom:7px;"></td>
+	</tr>
+	<tr>
+		<td align="left" colspan="3" style="padding-bottom:7px;"></td>
+	</tr>
 			</tr>
 			<tr>
 				<td></td>

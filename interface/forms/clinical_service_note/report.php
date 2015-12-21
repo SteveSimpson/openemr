@@ -22,7 +22,7 @@
  
 include_once("../../globals.php");
 include_once($GLOBALS["srcdir"]."/api.inc");
-function init_clinical_assessment_report( $pid, $encounter, $cols, $id) {
+function clinical_service_note_report( $pid, $encounter, $cols, $id) {
 	$count = 0;
 	$data = formFetch("form_init_clinical_assessment", $id);
 	if ($data) {
